@@ -57,7 +57,7 @@ public class BookService {
         if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Book with id %s not found", id));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Bookfasf with id %s not found", id));
         }
     }
 
