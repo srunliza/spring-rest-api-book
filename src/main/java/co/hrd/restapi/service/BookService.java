@@ -1,13 +1,12 @@
 package co.hrd.restapi.service;
 
 
-import co.hrd.restapi.dto.BookDto;
+import co.hrd.restapi.dto.CreateBookDto;
 import co.hrd.restapi.entity.Book;
 import co.hrd.restapi.repository.BookRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,11 +14,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class BookService {
     private final BookRepository bookRepository;
+    private final ModelMapper modelMapper;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, ModelMapper modelMapper) {
         this.bookRepository = bookRepository;
+        this.modelMapper = modelMapper;
     }
 
     // Get all books
@@ -37,12 +39,13 @@ public class BookService {
     }
 
     // Insert new book
-    public Book createBook(Book book) {
+    public Book createBook(CreateBookDto createBookDto) {
+        Book book = modelMapper.map(createBookDto, Book.class);
         return bookRepository.save(book);
     }
 
     // Update book by id
-    public Book updateBook(Long id, BookDto bookDto) {
+    public Book updateBook(Long id, CreateBookDto bookDto) {
         return bookRepository.findById(id)
                 .map(existingBook -> {
                     existingBook.setTitle(bookDto.title());
@@ -57,7 +60,7 @@ public class BookService {
         if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Bookfasf with id %s not found", id));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Book with id %s not found", id));
         }
     }
 
