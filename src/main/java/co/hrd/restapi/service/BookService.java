@@ -41,6 +41,7 @@ public class BookService {
     // Insert new book
     public Book createBook(CreateBookDto createBookDto) {
         Book book = modelMapper.map(createBookDto, Book.class);
+        log.error("Book: {}", createBookDto);
         return bookRepository.save(book);
     }
 
