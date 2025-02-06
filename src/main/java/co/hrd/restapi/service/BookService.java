@@ -3,6 +3,7 @@ package co.hrd.restapi.service;
 
 import co.hrd.restapi.dto.CreateBookDto;
 import co.hrd.restapi.entity.Book;
+import co.hrd.restapi.mapper.BookMapStruct;
 import co.hrd.restapi.repository.BookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -17,11 +18,12 @@ import java.util.Optional;
 @Slf4j
 public class BookService {
     private final BookRepository bookRepository;
-    private final ModelMapper modelMapper;
+    private final BookMapStruct bookMapStruct;
 
-    public BookService(BookRepository bookRepository, ModelMapper modelMapper) {
+
+    public BookService(BookRepository bookRepository, ModelMapper modelMapper, BookMapStruct bookMapStruct) {
         this.bookRepository = bookRepository;
-        this.modelMapper = modelMapper;
+        this.bookMapStruct = bookMapStruct;
     }
 
     // Get all books
@@ -40,7 +42,7 @@ public class BookService {
 
     // Insert new book
     public Book createBook(CreateBookDto createBookDto) {
-        Book book = modelMapper.map(createBookDto, Book.class);
+        Book book = bookMapStruct.fromCreateBookDto(createBookDto);
         log.error("Book: {}", createBookDto);
         return bookRepository.save(book);
     }

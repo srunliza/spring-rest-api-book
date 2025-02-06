@@ -4,6 +4,8 @@ import co.hrd.restapi.dto.CreateBookDto;
 import co.hrd.restapi.entity.Book;
 import co.hrd.restapi.service.BookService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +25,9 @@ public class BookController {
 
     // Get all books
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public ResponseEntity<?> getAllBooks() {
+        List<Book> books = bookService.getAllBooks();
+        return ResponseEntity.status(HttpStatus.OK).body(books);
     }
 
     // Get book by id
@@ -36,20 +39,23 @@ public class BookController {
 
     // Insert new book
     @PostMapping
-    public Book addBook(@RequestBody CreateBookDto createBookDto) {
-        return bookService.createBook(createBookDto);
+    public ResponseEntity<?> addBook(@RequestBody CreateBookDto createBookDto) {
+        Book book = bookService.createBook(createBookDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
 
     // Update book by id
     @PutMapping("/{id}")
-    public Book updateBook(@PathVariable long id, @RequestBody CreateBookDto createBookDto) {
-        return bookService.updateBook(id, createBookDto);
+    public ResponseEntity<?> updateBook(@PathVariable long id, @RequestBody CreateBookDto createBookDto) {
+        Book updatedBook = bookService.updateBook(id, createBookDto);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedBook);
+
     }
 
     // Delete book by id
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable long id) {
         bookService.deleteBook(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).body("Book has been deleted");
     }
 }
